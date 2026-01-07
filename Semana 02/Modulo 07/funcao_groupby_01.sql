@@ -1,0 +1,1 @@
+-- -Módulo 07 - [SQL Server] Criando agrupamentos no SQL -- #F077 02. Group By (Parte 1)
