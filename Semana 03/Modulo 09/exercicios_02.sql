@@ -157,3 +157,99 @@ INNER JOIN DimProduct p
 WHERE CustomerKey = 7665
 GROUP BY p.ProductName
 ORDER BY SUM(s.SalesQuantity) DESC
+
+/* Questão 5
+Faça um resumo mostrando o total de produtos comprados (Sales
+Quantity) de acordo com o sexo dos clientes. */
+
+SELECT
+	SUM(s.SalesQuantity) AS 'total_vendido',
+	cus.Gender AS 'sexo'
+FROM
+	FactOnlineSales s 
+INNER JOIN DimCustomer cus
+	ON s.CustomerKey = cus.CustomerKey
+WHERE cus.Gender IS NOT NULL
+GROUP BY cus.Gender
+
+
+/* Questão 6
+
+Faça uma tabela resumo mostrando a taxa de câmbio média de acordo
+com cada CurrencyDescription. A tabela final deve conter apenas taxas
+entre 10 e 100. */
+
+
+SELECT
+	c.CurrencyDescription AS 'money_description',
+	AVG(tax.AverageRate) AS 'average_rate'
+FROM
+	FactExchangeRate tax
+INNER JOIN DimCurrency c
+	ON tax.CurrencyKey = c.CurrencyKey
+GROUP BY CurrencyDescription
+HAVING AVG(tax.AverageRate) BETWEEN 10 AND 100
+ORDER BY AVG(tax.AverageRate) DESC
+	
+
+/* Questão 7
+Descubra o valor total na tabela FactStrategyPlan destinado aos
+cenários: Actual e Budget. */
+
+
+SELECT
+	sc.ScenarioName AS 'scenario_name',
+	SUM(pl.Amount) AS 'total_price'
+FROM
+	FactStrategyPlan pl
+INNER JOIN DimScenario sc
+	ON pl.ScenarioKey = sc.ScenarioKey
+GROUP BY ScenarioName
+HAVING ScenarioName IN ('Actual', 'Budget')
+
+/* Questão 8
+Faça uma tabela resumo mostrando o resultado do planejamento
+estratégico (FactStrategyPlan ) por ano. */
+
+
+SELECT
+	SUM(pl.Amount) AS 'total_sales',
+	dt.CalendarYearLabel
+FROM
+	FactStrategyPlan pl
+INNER JOIN DimDate dt
+	ON pl.Datekey = dt.Datekey
+GROUP BY CalendarYearLabel
+
+/* Questão 9
+
+Faça um agrupamento de quantidade de produtos por
+ProductSubcategoryName. Leve em consideração em sua análise apenas
+a marca Contoso e a cor Silver. */
+
+
+SELECT
+	COUNT(p.ProductName) AS 'product_name',
+	sub.ProductSubcategoryName
+FROM 
+	DimProduct p
+INNER JOIN DimProductSubcategory sub
+	ON p.ProductSubcategoryKey = sub.ProductSubcategoryKey
+GROUP BY ProductSubcategoryName
+
+/* Questão 10
+Faça um agrupamento duplo de quantidade de produtos por
+BrandName e ProductSubcategoryName. A tabela final deverá ser
+ordenada de acordo com a coluna BrandName. */
+
+
+SELECT
+	COUNT(p.ProductName) AS 'total_products',
+	p.BrandName AS 'brand_name',
+	sub.ProductSubcategoryName AS 'product_subcategory_name'
+FROM
+	DimProduct p
+INNER JOIN DimProductSubcategory sub
+	ON p.ProductSubcategoryKey = sub.ProductSubcategoryKey
+GROUP BY BrandName,ProductSubcategoryName
+ORDER BY brand_name 
